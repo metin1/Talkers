@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';
 import {signUp} from '../../store/actions/authActions'
 import './sign.css'
+import NumberFormat from 'react-number-format';
 
 export class SignUp extends Component {
   state = {
@@ -110,6 +111,7 @@ handleSubmit=(e)=>{
               <input type="text" id="skype" onChange={this.handleChange}  /> 
             </div>
             <div className="input-field col s6">
+              <NumberFormat id="mobile"  format="+90 (###) ###-####" mask="_" onChange={this.handleChange} />
               <input id="mobile" type="tel" className="validate" pattern="[0-9]*" maxLength="10" placeholder="(xxx) xxx-xxxx" onChange={this.handleChange}/>
               <label for="mobile">Telephone Numarası</label>
             </div>

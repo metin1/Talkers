@@ -1,46 +1,68 @@
 import React from 'react'
 import './calender.css'
-import {button} from 'react-bootstrap'
+import {connect} from 'react-redux'
+import { createSlot, updateSlot } from '../../store/actions/slotActions'
 
-const butStyle = {
-  width: '100%',
-  height: '35px',
-  background: '#008CBA',
-  fontsize: '12px',
-  color: 'white',
-  paddind:"1px:1px:1px:1px",
-  margin:"1px"
-};
 
 class Toggle extends React.Component {
+
   constructor(props) {
     super(props);
-    this.state = {isToggleOn: true};
-
-    // This binding is necessary to make `this` work in the callback
+    this.state = {
+      isToggleOn: false,
+      status:'AÇIK',
+      sdate:'',
+      stime:'',
+      stype:'1v1',
+    };
+    this.state.sdate = this.props.sdate;
+    this.state.stime = this.props.stime;
     this.handleClick = this.handleClick.bind(this);
-  }
+    
+  } 
 
-	handleClick() {
-		this.setState(function(prevState) {
-			return {isToggleOn: !prevState.isToggleOn};
-		});
+	handleClick(e) {
+
+    this.setState(prevState => ({
+      isToggleOn: !prevState.isToggleOn
+    }));
+
+    this.state.isToggleOn ? this.setState({status:"KAPALI"}) :  this.setState({status:'AÇIK'}) // this.state.status='KAPALI': this.state.status='AÇIK';
+    //this.state.uid = this.state.sdate + this.state.stime
+    this.state.isToggleOn ? this.props.updateSlot(this.state) : this.props.createSlot(this.state) 
+    console.log(this.state);
 	}
-	
-	// ES6 -------
-	// handleClick() {
-	// 	this.setState(prevState => ({
-	// 		isToggleOn: !prevState.isToggleOn
-	// 	}));
-	// }
 
   render() {
+
     return (
-      <button className="waves-effect waves-light btn" style={butStyle} onClick={this.handleClick}>
+      
+      <button 
+      style={{background: this.state.isToggleOn ? '#4dff4d' : '#ffff80', width: '100%', height: '20px', 
+      justifyContent:'center', verticalalign:'middle', fontsize:'8px', padding:'0 0 0 0', margin: '0 0 0 0', 
+      border:'none', color:'black', 
+      fontface:'verdana' }}  
+      onClick={this.handleClick}
+      src={this.props.sdate}>
         {this.state.isToggleOn ? 'AÇIK' : 'KAPALI'}
       </button>
     );
   }
 }
 
-export default Toggle
+
+const mapStateToProps=(state)=>{
+  return{
+    auth:state.firebase.auth
+  }
+}
+
+const mapDispatchToProps=(dispatch)=>{
+  return {
+    createSlot:(slot)=>dispatch(createSlot(slot)),
+    updateSlot:(slot)=>dispatch(updateSlot(slot))
+
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (Toggle)
