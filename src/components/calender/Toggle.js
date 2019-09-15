@@ -1,10 +1,12 @@
 import React from 'react'
 import './calender.css'
-import {connect} from 'react-redux'
 import { createSlot, updateSlot } from '../../store/actions/slotActions'
-
+import {connect} from 'react-redux';
+import {firestoreConnect} from 'react-redux-firebase';
+import {compose} from 'redux';
 
 class Toggle extends React.Component {
+
 
   constructor(props) {
     super(props);
@@ -20,6 +22,16 @@ class Toggle extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     
   } 
+
+  loadInitialValues=(props) => {
+    //console.log(props);
+      //const id=props.match.params.id
+      const {project,auth}=props;
+      
+    
+      if(project){
+    }
+  }
 
 	handleClick(e) {
 
@@ -50,12 +62,20 @@ class Toggle extends React.Component {
   }
 }
 
-
 const mapStateToProps=(state)=>{
+  console.log(state)
+  const id=state.firebase.auth.uid;
+  console.log(state.firebase.auth.uid)
+  const slots=state.firestore.data.slots;
+  const slot=slots ? slots[id] : null;
+  console.log(slot)
+  console.log(slots)
   return{
-    auth:state.firebase.auth
+      slot:slot,
+      auth:state.firebase.auth
   }
 }
+
 
 const mapDispatchToProps=(dispatch)=>{
   return {
@@ -65,4 +85,6 @@ const mapDispatchToProps=(dispatch)=>{
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (Toggle)
+export default compose(connect(mapStateToProps, mapDispatchToProps), firestoreConnect([
+  {collection:'slots'}
+])) (Toggle)
